@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String
+  plan      String   @default("free") // free | pro
+  createdAt DateTime @default(now())
+  notes     Note[]
+  pages     Page[]
+}
+
+model Page {
+  id        String   @id @default(cuid())
+  userId    String
+  url       String
+  title     String
+  pageKey   String   // normalized key e.g. "youtube.com/watch?v=xxx"
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+
+  @@unique([userId, pageKey])
+}
+
+model Note {
+  id          String   @id @default(cuid())
+  userId      String
+  pageId      String?
+  content     String
+  comment     String?
+  colorIndex  Int      @default(0)
+  pinned      Boolean  @default(false)
+  posX        Float    @default(100)
+  posY        Float    @default(100)
+  sourceUrl   String?
+  sourceTitle String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  page        Page?    @relation(fields: [pageId], references: [id], onDelete: SetNull)
+}

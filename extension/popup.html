@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
+    body { width: 340px; min-height: 200px; background: #0d1120; color: #eee; }
+    .header { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .header h1 { font-size: 15px; font-weight: 700; color: #fff; }
+    .page-info { padding: 10px 16px; font-size: 11px; color: #8892b0; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .notes-list { padding: 10px; max-height: 280px; overflow-y: auto; }
+    .note-card { background: #FFF9C4; border-radius: 7px; padding: 10px 12px; margin-bottom: 8px; }
+    .note-card p { font-size: 12px; color: #1a1a1a; line-height: 1.5; word-break: break-word; }
+    .note-card .comment { font-size: 11px; color: #666; font-style: italic; margin-top: 5px; }
+    .add-section { padding: 10px; border-top: 1px solid rgba(255,255,255,0.07); }
+    textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; color: #fff; padding: 9px; font-size: 12px; resize: none; outline: none; }
+    .btn { width: 100%; padding: 9px; background: #f9a825; border: none; border-radius: 7px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; }
+    .btn:disabled { opacity: 0.5; }
+    .login-msg { padding: 24px; text-align: center; }
+    .login-msg a { color: #f9a825; font-size: 13px; }
+    .empty { padding: 20px; text-align: center; color: #3a4060; font-size: 13px; }
+    #status { font-size: 11px; color: #f9a825; padding: 4px 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <span style="font-size:20px">📌</span>
+    <h1>StickyDesk</h1>
+  </div>
+  <div class="page-info" id="pageInfo">Loading...</div>
+  <div id="content">
+    <div class="empty">Loading notes...</div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
