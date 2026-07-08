@@ -162,15 +162,20 @@ function createWidget(notes) {
         : `right:${defaultRight}px; bottom:${defaultBottom + i * 120}px;`
       }
       width: 240px;
+      height: 240px;
       background: ${color};
-      border-radius: 10px;
-      padding: 12px 14px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.22);
-      border-top: 4px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+      border-top: 4px solid rgba(0,0,0,0.15);
       font-family: 'Segoe UI', sans-serif;
       animation: sd-slide-in 0.3s ease;
       pointer-events: all;
       user-select: none;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     `;
 
     // Close button

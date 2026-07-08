@@ -116,7 +116,7 @@ function PinModal({ note, onPin, onClose }) {
   );
 }
 
-// ── Note Card (Image 2 layout + pin button) ───────────────────────────────
+// ── Note Card (Square layout + pin button) ───────────────────────────────
 function NoteCard({ note, onDelete, onUpdate, onPin }) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState({ content: note.content, comment: note.comment || "" });
@@ -132,32 +132,71 @@ function NoteCard({ note, onDelete, onUpdate, onPin }) {
   };
 
   return (
-    <div style={{ background: color.bg, borderTop: `4px solid ${color.border}`, borderRadius: 10, padding: "14px 16px", position: "relative", boxShadow: "0 2px 12px rgba(0,0,0,0.15)" }}>
+    <div style={{
+      background: color.bg,
+      borderTop: `4px solid ${color.border}`,
+      borderRadius: 12,
+      padding: "20px 16px 14px",
+      position: "relative",
+      boxShadow: "0 4px 16px rgba(0,0,0,0.12)",
+      aspectRatio: "1 / 1",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      boxSizing: "border-box"
+    }}>
       {note.pinned && <span style={{ position: "absolute", top: 8, right: 36, fontSize: 14 }} title="Pinned">📌</span>}
       <button onClick={() => onDelete(note.id)} style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", fontSize: 16, cursor: "pointer", opacity: 0.4 }}>🗑️</button>
 
       {editing ? (
-        <>
-          <textarea value={draft.content} onChange={e => setDraft(d => ({ ...d, content: e.target.value }))}
-            style={{ width: "100%", border: `1px solid ${color.border}`, borderRadius: 6, padding: 8, fontSize: 13, background: "rgba(255,255,255,0.6)", resize: "vertical", boxSizing: "border-box", minHeight: 70 }} />
-          <textarea value={draft.comment} onChange={e => setDraft(d => ({ ...d, comment: e.target.value }))}
-            placeholder="Comment..." style={{ width: "100%", border: `1px solid ${color.border}55`, borderRadius: 6, padding: 8, fontSize: 12, background: "rgba(255,255,255,0.4)", resize: "vertical", boxSizing: "border-box", minHeight: 40, marginTop: 6 }} />
+        <div style={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", flexDirection: "column", flex: 1 }}>
+            <textarea value={draft.content} onChange={e => setDraft(d => ({ ...d, content: e.target.value }))}
+              style={{ width: "100%", border: `1px solid ${color.border}`, borderRadius: 6, padding: 8, fontSize: 13, background: "rgba(255,255,255,0.6)", resize: "none", boxSizing: "border-box", flex: 1, minHeight: 60 }} />
+            <textarea value={draft.comment} onChange={e => setDraft(d => ({ ...d, comment: e.target.value }))}
+              placeholder="Comment..." style={{ width: "100%", border: `1px solid ${color.border}55`, borderRadius: 6, padding: 8, fontSize: 12, background: "rgba(255,255,255,0.4)", resize: "none", boxSizing: "border-box", height: 40, marginTop: 6 }} />
+          </div>
           <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
             <button onClick={save} style={{ background: color.border, color: "#fff", border: "none", borderRadius: 6, padding: "5px 14px", fontSize: 13, cursor: "pointer" }}>Save</button>
             <button onClick={() => setEditing(false)} style={{ background: "none", border: `1px solid ${color.border}`, borderRadius: 6, padding: "5px 10px", fontSize: 13, cursor: "pointer" }}>Cancel</button>
           </div>
-        </>
+        </div>
       ) : (
         <>
-          <p style={{ fontSize: 13, lineHeight: 1.6, color: "#1a1a1a", wordBreak: "break-word", marginBottom: 6 }}>{formatTextWithLinks(note.content)}</p>
-          {note.comment && <p style={{ fontSize: 12, color: "#555", fontStyle: "italic", borderTop: `1px dashed ${color.border}55`, paddingTop: 6 }}>💬 {formatTextWithLinks(note.comment)}</p>}
-          {note.page && (
-            <a href={note.page.url} target="_blank" rel="noopener noreferrer"
-              style={{ display: "block", marginTop: 8, fontSize: 11, color: color.border, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-              🔗 {note.page.title}
-            </a>
-          )}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 8 }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", marginBottom: 6 }}>
+            <p style={{
+              fontSize: 13,
+              lineHeight: 1.6,
+              color: "#1a1a1a",
+              wordBreak: "break-word",
+              margin: 0,
+              overflow: "hidden",
+              display: "-webkit-box",
+              WebkitLineClamp: 4,
+              WebkitBoxOrient: "vertical"
+            }}>{formatTextWithLinks(note.content)}</p>
+            {note.comment && (
+              <p style={{
+                fontSize: 12,
+                color: "#555",
+                fontStyle: "italic",
+                borderTop: `1px dashed ${color.border}55`,
+                paddingTop: 6,
+                marginTop: 6,
+                overflow: "hidden",
+                display: "-webkit-box",
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: "vertical"
+              }}>💬 {formatTextWithLinks(note.comment)}</p>
+            )}
+            {note.page && (
+              <a href={note.page.url} target="_blank" rel="noopener noreferrer"
+                style={{ display: "block", marginTop: "auto", paddingTop: 4, fontSize: 11, color: color.border, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                🔗 {note.page.title}
+              </a>
+            )}
+          </div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${color.border}22`, paddingTop: 8 }}>
             <span style={{ fontSize: 11, color: "#999" }}>{new Date(note.createdAt).toLocaleDateString()}</span>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
               {!note.pinned && (
