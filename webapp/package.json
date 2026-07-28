@@ -9,19 +9,20 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
-    "next": "14.2.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "next-auth": "^4.24.5",
     "@prisma/client": "^5.10.0",
     "bcryptjs": "^2.4.3",
+    "lucide-react": "^1.27.0",
+    "next": "14.2.0",
+    "next-auth": "^4.24.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "prisma": "^5.10.0",
     "@types/bcryptjs": "^2.4.6",
-    "typescript": "^5.0.0",
     "@types/node": "^20.0.0",
-    "@types/react": "^18.0.0"
+    "@types/react": "^18.0.0",
+    "prisma": "^5.10.0",
+    "typescript": "^5.0.0"
   }
 }

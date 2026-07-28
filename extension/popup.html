@@ -2,30 +2,95 @@
 <html>
 <head>
   <meta charset="UTF-8" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
-    body { width: 340px; min-height: 200px; background: #0d1120; color: #eee; }
-    .header { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(255,255,255,0.07); }
-    .header h1 { font-size: 15px; font-weight: 700; color: #fff; }
-    .page-info { padding: 10px 16px; font-size: 11px; color: #8892b0; border-bottom: 1px solid rgba(255,255,255,0.05); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Segoe UI', -apple-system, sans-serif; }
+    body { width: 340px; min-height: 200px; background: #fff8f3; color: #1a0a00; }
+
+    .header {
+      display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+      border-bottom: 1px solid rgba(234,88,12,0.15);
+      background: linear-gradient(135deg, #fff4ee 0%, #fff8f3 100%);
+    }
+    .header h1 {
+      font-family: 'Righteous', cursive;
+      font-size: 17px; font-weight: 400; color: #1a0a00; letter-spacing: 0.5px;
+    }
+    .header h1 span { color: #ea580c; }
+
+    .page-info {
+      padding: 8px 16px; font-size: 11px; color: #92400e; font-weight: 500;
+      border-bottom: 1px solid rgba(234,88,12,0.1);
+      background: #fff4ee;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
     .notes-list { padding: 10px; max-height: 280px; overflow-y: auto; }
-    .note-card { background: #FFF9C4; border-radius: 7px; padding: 10px 12px; margin-bottom: 8px; }
-    .note-card p { font-size: 12px; color: #1a1a1a; line-height: 1.5; word-break: break-word; }
-    .note-card .comment { font-size: 11px; color: #666; font-style: italic; margin-top: 5px; }
-    .add-section { padding: 10px; border-top: 1px solid rgba(255,255,255,0.07); }
-    textarea { width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 7px; color: #fff; padding: 9px; font-size: 12px; resize: none; outline: none; }
-    .btn { width: 100%; padding: 9px; background: #f9a825; border: none; border-radius: 7px; color: #fff; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px; }
-    .btn:disabled { opacity: 0.5; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(234,88,12,0.25); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(234,88,12,0.45); }
+
+    .note-card { border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; border-left: 3px solid; position: relative; overflow: hidden; }
+    .note-card p { font-size: 12px; color: #1a0a00; line-height: 1.5; word-break: break-word; font-weight: 500; }
+    .note-card .comment { font-size: 11px; color: #78350f; font-style: italic; margin-top: 5px; }
+
+    /* Delete confirmation overlay - matches web app style */
+    .delete-confirm-overlay {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.97);
+      border-radius: 10px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 10px; z-index: 20;
+      padding: 10px; box-sizing: border-box;
+      animation: sd-fade-in 0.15s ease;
+    }
+    @keyframes sd-fade-in { from { opacity:0; } to { opacity:1; } }
+    .delete-confirm-overlay p { color: #0f172a; font-size: 12px; font-weight: 700; margin: 0; text-align: center; }
+    .delete-confirm-overlay .del-btn-row { display: flex; gap: 8px; }
+    .cancel-del-btn { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; border-radius: 6px; padding: 5px 14px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; }
+    .confirm-del-btn { background: #ef4444; color: #fff; border: none; border-radius: 6px; padding: 5px 14px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: inherit; }
+
+    .add-section { padding: 10px; border-top: 1px solid rgba(234,88,12,0.12); background: #fff8f3; }
+
+    textarea {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid rgba(234,88,12,0.25);
+      border-radius: 8px; color: #1a0a00; padding: 9px;
+      font-size: 12px; resize: none; outline: none;
+      transition: border-color 0.2s; font-family: inherit;
+    }
+    textarea:focus { border-color: #ea580c; box-shadow: 0 0 0 3px rgba(234,88,12,0.1); }
+    textarea::placeholder { color: #d97706; }
+
+    .btn {
+      width: 100%; padding: 10px;
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%);
+      border: none; border-radius: 8px; color: #fff;
+      font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 8px;
+      box-shadow: 0 4px 14px rgba(234,88,12,0.35);
+      transition: all 0.2s; font-family: inherit;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(234,88,12,0.45); }
+    .btn:active:not(:disabled) { transform: translateY(0); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
     .login-msg { padding: 24px; text-align: center; }
-    .login-msg a { color: #f9a825; font-size: 13px; }
-    .empty { padding: 20px; text-align: center; color: #3a4060; font-size: 13px; }
-    #status { font-size: 11px; color: #f9a825; padding: 4px 0; text-align: center; }
+    .login-msg a { color: #ea580c; font-size: 13px; font-weight: 600; }
+
+    .empty { padding: 20px; text-align: center; color: #d97706; font-size: 13px; }
+
+    #status { font-size: 11px; color: #ea580c; padding: 4px 0; text-align: center; font-weight: 600; }
   </style>
 </head>
 <body>
   <div class="header">
-    <span style="font-size:20px">📌</span>
-    <h1>StickyDesk</h1>
+    <img src="/logo.png" alt="Logo" style="height:28px;width:28px;border-radius:50%;object-fit:cover;" onerror="this.style.display='none';this.nextElementSibling.textContent='📌';" />
+    <span style="font-size:20px;display:none">📌</span>
+    <h1>Sticky<span>Desk</span></h1>
   </div>
   <div class="page-info" id="pageInfo">Loading...</div>
   <div id="content">

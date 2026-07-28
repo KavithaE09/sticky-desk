@@ -1,28 +1,18 @@
-// IMPORTANT: Change this to your deployed Vercel URL
 const API_BASE = "http://localhost:3000";
 
-// Fetch notes for current tab's page
-async function fetchNotesForPage(pageKey, token) {
-  try {
-    const res = await fetch(`${API_BASE}/api/notes?pageKey=${encodeURIComponent(pageKey)}`, {
-      headers: { "Authorization": `Bearer ${token}` }
-    });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.notes || [];
-  } catch { return []; }
-}
+async function apiFetch(path, options = {}) {
+  const urlObj = new URL(`${API_BASE}${path}`);
+  const headers = options.headers || {};
+  const method = options.method || "GET";
+  const body = options.body;
 
-// Save note for a page
-async function saveNote(noteData, token) {
   try {
-    const res = await fetch(`${API_BASE}/api/notes`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-      body: JSON.stringify(noteData),
-    });
-    return await res.json();
-  } catch { return null; }
+    const res = await fetch(urlObj.toString(), { method, headers, body });
+    const data = await res.json().catch(() => ({}));
+    return { ok: res.ok, status: res.status, data };
+  } catch (e) {
+    return { ok: false, error: e.message, data: {} };
+  }
 }
 
 // When tab changes, notify content script
@@ -30,7 +20,7 @@ chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
     const tab = await chrome.tabs.get(tabId);
     if (tab.url && !tab.url.startsWith("chrome://")) {
-      chrome.tabs.sendMessage(tabId, { type: "TAB_ACTIVATED", url: tab.url, title: tab.title });
+      chrome.tabs.sendMessage(tabId, { type: "TAB_ACTIVATED", url: tab.url, title: tab.title }).catch(() => {});
     }
   } catch {}
 });
@@ -41,22 +31,63 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   }
 });
 
-// Listen from popup/content
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
+
+  // GET notes for a page
   if (msg.type === "GET_NOTES") {
-    chrome.storage.local.get("token", async ({ token }) => {
-      if (!token) { reply({ notes: [], error: "Not logged in" }); return; }
-      const notes = await fetchNotesForPage(msg.pageKey, token);
-      reply({ notes });
+    chrome.storage.local.get(["sd_token", "token"], async ({ sd_token, token }) => {
+      const t = sd_token || token;
+      if (!t) { reply({ notes: [], error: "Not logged in" }); return; }
+      const result = await apiFetch(`/api/notes?pageKey=${encodeURIComponent(msg.pageKey)}`, {
+        headers: { "Authorization": `Bearer ${t}` }
+      });
+      reply({ notes: result.data.notes || [], plan: result.data.plan || "free" });
     });
     return true;
   }
+
+  // SAVE new note
   if (msg.type === "SAVE_NOTE") {
-    chrome.storage.local.get("token", async ({ token }) => {
-      if (!token) { reply({ error: "Not logged in" }); return; }
-      const result = await saveNote(msg.data, token);
+    chrome.storage.local.get(["sd_token", "token"], async ({ sd_token, token }) => {
+      const t = sd_token || token;
+      if (!t) { reply({ ok: false, error: "Not logged in" }); return; }
+      const result = await apiFetch("/api/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+        body: JSON.stringify(msg.data)
+      });
       reply(result);
     });
     return true;
   }
+
+  // UPDATE note
+  if (msg.type === "UPDATE_NOTE") {
+    chrome.storage.local.get(["sd_token", "token"], async ({ sd_token, token }) => {
+      const t = sd_token || token;
+      if (!t) { reply({ ok: false, error: "Not logged in" }); return; }
+      const result = await apiFetch(`/api/notes/${msg.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${t}` },
+        body: JSON.stringify(msg.data)
+      });
+      reply(result);
+    });
+    return true;
+  }
+
+  // DELETE note
+  if (msg.type === "DELETE_NOTE") {
+    chrome.storage.local.get(["sd_token", "token"], async ({ sd_token, token }) => {
+      const t = sd_token || token;
+      if (!t) { reply({ ok: false, error: "Not logged in" }); return; }
+      const result = await apiFetch(`/api/notes/${msg.id}`, {
+        method: "DELETE",
+        headers: { "Authorization": `Bearer ${t}` }
+      });
+      reply(result);
+    });
+    return true;
+  }
+
 });

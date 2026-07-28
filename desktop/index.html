@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>StickyDesk Desktop Overlay</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif; user-select: none; }
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background: transparent !important;
+      pointer-events: none;
+    }
+
+    @keyframes sd-slide-in {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Floating "+ Add New Note" Button in bottom-right corner */
+    .sd-add-btn {
+      position: fixed !important;
+      bottom: 24px !important;
+      right: 24px !important;
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%) !important;
+      color: #fff !important;
+      border: none !important;
+      border-radius: 10px !important;
+      padding: 10px 20px !important;
+      font-size: 13px !important;
+      font-weight: 700 !important;
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      box-shadow: 0 6px 20px rgba(234,88,12,0.4) !important;
+      z-index: 2147483647 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      transition: transform 0.15s, box-shadow 0.15s !important;
+      animation: sd-slide-in 0.3s ease !important;
+    }
+    .sd-add-btn:hover {
+      transform: scale(1.06) !important;
+      box-shadow: 0 8px 26px rgba(234,88,12,0.55) !important;
+    }
+
+    /* Add Note Modal (Right bottom corner above button) */
+    .sd-modal {
+      position: fixed !important;
+      bottom: 85px !important;
+      right: 24px !important;
+      background: #ffffff;
+      border: 1px solid rgba(234,88,12,0.2);
+      border-radius: 16px;
+      padding: 22px 24px 20px;
+      width: 360px;
+      box-sizing: border-box;
+      box-shadow: 0 16px 48px rgba(234,88,12,0.18), 0 4px 16px rgba(0,0,0,0.08);
+      pointer-events: auto !important;
+      animation: sd-slide-in 0.3s ease;
+      display: none;
+      z-index: 2147483647;
+    }
+    .sd-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .sd-modal-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #1a0a00;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .sd-modal-close {
+      color: rgba(120,53,15,0.5);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+    }
+    .sd-modal-close:hover { color: #ea580c; }
+
+    textarea {
+      width: 100%;
+      background: #fff8f3;
+      border: 1px solid rgba(234,88,12,0.25);
+      border-radius: 8px;
+      padding: 12px;
+      color: #1a0a00;
+      font-size: 13px;
+      resize: none;
+      box-sizing: border-box;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      margin-bottom: 10px;
+    }
+    textarea:focus {
+      border-color: #ea580c;
+      box-shadow: 0 0 0 3px rgba(234,88,12,0.1);
+    }
+
+    .comment-area {
+      min-height: 40px;
+      background: #fff4ee;
+      border: 1px solid rgba(234,88,12,0.15);
+      color: #78350f;
+      font-size: 12px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+    }
+
+    /* App Pin Selector Dropdown */
+    .app-select-container {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .app-select-label {
+      font-size: 11px;
+      color: #78350f;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    select.app-dropdown {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid rgba(234,88,12,0.25);
+      border-radius: 8px;
+      background: #fff8f3;
+      color: #1a0a00;
+      font-size: 12px;
+      font-weight: 600;
+      outline: none;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    select.app-dropdown:focus {
+      border-color: #ea580c;
+    }
+
+    .color-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .color-label {
+      font-size: 12px;
+      color: #92400e;
+      margin-right: 4px;
+      font-weight: 600;
+    }
+    .color-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      cursor: pointer;
+      box-sizing: border-box;
+      border: 3px solid transparent;
+      transition: transform .15s, border-color .15s;
+    }
+    .color-dot.active {
+      transform: scale(1.25);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      align-items: center;
+    }
+    .cancel-btn {
+      padding: 8px 18px;
+      border: 1px solid rgba(234,88,12,0.2);
+      background: transparent;
+      color: #92400e;
+      font-size: 13px;
+      cursor: pointer;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+    .save-btn {
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #ea580c 0%, #f97316 100%);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(234,88,12,0.25);
+    }
+
+    /* Floating Draggable Note Cards */
+    .sd-card {
+      position: fixed;
+      width: 210px;
+      min-height: 125px;
+      border-radius: 14px;
+      padding: 10px 12px 8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.14);
+      pointer-events: auto !important;
+      cursor: grab;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      animation: sd-slide-in 0.2s ease;
+      box-sizing: border-box;
+      border-top: 5px solid;
+      overflow: hidden;
+    }
+    .sd-card:active { cursor: grabbing; }
+    .sd-card p {
+      font-size: 12px;
+      color: #1a1a1a;
+      line-height: 1.4;
+      word-break: break-word;
+      font-weight: 500;
+      margin-right: 16px;
+    }
+    .sd-card .comment {
+      font-size: 10px;
+      color: #78350f;
+      font-style: italic;
+      margin-top: 4px;
+    }
+    .app-tag {
+      font-size: 9px;
+      font-weight: 700;
+      background: rgba(234,88,12,0.15);
+      color: #ea580c;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .sd-close {
+      position: absolute;
+      top: 4px;
+      right: 6px;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: rgba(0,0,0,0.4);
+    }
+    .sd-close:hover { color: #ea580c; }
+  </style>
+</head>
+<body>
+
+  <!-- Floating Add Note Button (Bottom Right Corner) -->
+  <div class="sd-add-btn" id="addBtn">+ Add New Note</div>
+
+  <!-- Add Note Modal -->
+  <div class="sd-modal" id="addModal">
+    <div class="sd-modal-header">
+      <div class="sd-modal-title">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ea580c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>
+        <span>New Desktop Note</span>
+      </div>
+      <span class="sd-modal-close" id="modalClose">✕</span>
+    </div>
+
+    <textarea id="noteContent" rows="3" placeholder="Type your note here..."></textarea>
+    <textarea id="noteComment" class="comment-area" rows="2" placeholder="Add a comment (optional)..."></textarea>
+
+    <!-- Automatic Pin App Badge (No Dropdown) -->
+    <div style="font-size:11px; color:#92400e; font-weight:700; background:#fff4ee; border:1px solid rgba(234,88,12,0.2); padding:7px 10px; border-radius:8px; display:flex; align-items:center; gap:6px; margin-bottom:12px;">
+      <span style="font-size:13px">📌</span> Pinned to: <span id="activeAppNameText" style="color:#ea580c; font-weight:800">Current App</span>
+    </div>
+
+    <div class="color-row" id="colorRow">
+      <span class="color-label">Color:</span>
+    </div>
+    <div class="btn-row">
+      <button class="cancel-btn" id="cancelBtn">Cancel</button>
+      <button class="save-btn" id="saveBtn">Save Note</button>
+    </div>
+  </div>
+
+  <!-- Container for Desktop Floating Notes -->
+  <div id="notesContainer"></div>
+
+  <script>
+    const EXT_COLORS = [
+      { bg: "#FFF9C4", border: "#F59E0B" },
+      { bg: "#FFE8D6", border: "#EA580C" },
+      { bg: "#FFE4E6", border: "#F43F5E" },
+      { bg: "#D1FAE5", border: "#10B981" },
+      { bg: "#E0F2FE", border: "#0284C7" },
+      { bg: "#F3E8FF", border: "#8B5CF6" }
+    ];
+    let selectedColor = 0;
+    let currentActiveApp = { process: 'Desktop App', title: '' };
+    let allLoadedNotes = [];
+
+    // Electron Mouse Pass-through Mouseenter / Mouseleave Handling
+    function registerMouseEvents(element) {
+      element.addEventListener('mouseenter', () => {
+        if (window.electronAPI && window.electronAPI.setIgnoreMouseEvents) {
+          window.electronAPI.setIgnoreMouseEvents(false);
+        }
+      });
+      element.addEventListener('mouseleave', () => {
+        if (window.electronAPI && window.electronAPI.setIgnoreMouseEvents) {
+          window.electronAPI.setIgnoreMouseEvents(true, { forward: true });
+        }
+      });
+    }
+
+    const addBtn = document.getElementById('addBtn');
+    const addModal = document.getElementById('addModal');
+    const modalClose = document.getElementById('modalClose');
+    const cancelBtn = document.getElementById('cancelBtn');
+    const saveBtn = document.getElementById('saveBtn');
+    const colorRow = document.getElementById('colorRow');
+    const notesContainer = document.getElementById('notesContainer');
+    registerMouseEvents(addBtn);
+    registerMouseEvents(addModal);
+
+    function updatePinBadgeText() {
+      const badgeText = document.getElementById('activeAppNameText');
+      if (badgeText) {
+        badgeText.textContent = currentActiveApp.process || 'Desktop App';
+      }
+    }
+
+    // Instant update when active window changes (100ms response time)
+    if (window.electronAPI && window.electronAPI.onActiveWindowChanged) {
+      window.electronAPI.onActiveWindowChanged((winData) => {
+        if (winData && winData.process) {
+          currentActiveApp = winData;
+          updatePinBadgeText();
+          filterAndRenderNotes();
+        }
+      });
+    }
+
+    // Build color picker dots
+    EXT_COLORS.forEach((c, i) => {
+      const dot = document.createElement('div');
+      dot.className = `color-dot ${i === 0 ? 'active' : ''}`;
+      dot.style.background = c.bg;
+      dot.style.borderColor = i === 0 ? c.border : 'transparent';
+      dot.style.boxShadow = `0 2px 6px ${c.border}44`;
+
+      dot.onclick = () => {
+        selectedColor = i;
+        colorRow.querySelectorAll('.color-dot').forEach((d, idx) => {
+          d.classList.toggle('active', idx === i);
+          d.style.borderColor = idx === i ? EXT_COLORS[idx].border : 'transparent';
+        });
+      };
+      colorRow.appendChild(dot);
+    });
+
+    // Toggle Modal
+    addBtn.onclick = async (e) => {
+      e.stopPropagation();
+      const isVisible = addModal.style.display === 'block';
+      addModal.style.display = isVisible ? 'none' : 'block';
+      if (!isVisible) {
+        if (window.electronAPI && window.electronAPI.getActiveWindow) {
+          const activeWin = await window.electronAPI.getActiveWindow();
+          if (activeWin && activeWin.process) currentActiveApp = activeWin;
+        }
+        updatePinBadgeText();
+        document.getElementById('noteContent').focus();
+      }
+    };
+
+    modalClose.onclick = cancelBtn.onclick = () => {
+      addModal.style.display = 'none';
+    };
+
+    // Save Note Handler
+    saveBtn.onclick = async () => {
+      const content = document.getElementById('noteContent').value.trim();
+      const comment = document.getElementById('noteComment').value.trim();
+      if (!content) return;
+
+      saveBtn.textContent = 'Saving...';
+      saveBtn.disabled = true;
+
+      const pinnedApp = currentActiveApp.process || null;
+
+      await window.electronAPI.saveNote({
+        content,
+        comment,
+        colorIndex: selectedColor,
+        targetApp: pinnedApp,
+      });
+
+      document.getElementById('noteContent').value = '';
+      document.getElementById('noteComment').value = '';
+      saveBtn.textContent = 'Save Note';
+      saveBtn.disabled = false;
+      addModal.style.display = 'none';
+
+      fetchNotes();
+    };
+
+    // Fetch Notes from Storage / API
+    async function fetchNotes() {
+      allLoadedNotes = await window.electronAPI.loadNotes();
+      filterAndRenderNotes();
+    }
+
+    // Instant filter based on currently active app
+    function filterAndRenderNotes() {
+      notesContainer.innerHTML = '';
+      const currentProc = (currentActiveApp.process || '').toLowerCase();
+      const rawProc = (currentActiveApp.rawProcess || '').toLowerCase();
+
+      allLoadedNotes.forEach((note, i) => {
+        // If note is pinned to a specific app, show ONLY when that app is active!
+        if (note.targetApp) {
+          const noteApp = note.targetApp.toLowerCase();
+          const matches = currentProc.includes(noteApp) || 
+                          noteApp.includes(currentProc) || 
+                          (rawProc && (rawProc.includes(noteApp) || noteApp.includes(rawProc)));
+          
+          if (!matches) return; // Instantly hide note!
+        }
+
+        let noteColorIndex = note.colorIndex !== undefined ? note.colorIndex : 0;
+        const color = EXT_COLORS[noteColorIndex] || EXT_COLORS[0];
+
+        const card = document.createElement('div');
+        card.className = 'sd-card';
+        card.style.background = color.bg;
+        card.style.borderColor = color.border;
+
+        // Position
+        const defaultRight = 240;
+        const defaultBottom = 24 + i * 140;
+
+        if (note.x !== undefined && note.y !== undefined) {
+          card.style.left = note.x + 'px';
+          card.style.top = note.y + 'px';
+        } else {
+          card.style.right = defaultRight + 'px';
+          card.style.bottom = defaultBottom + 'px';
+        }
+
+        // View Mode HTML
+        const viewModeDiv = document.createElement('div');
+        viewModeDiv.className = 'sd-view-mode';
+        viewModeDiv.style.cssText = 'display: flex; flex-direction: column; justify-content: space-between; flex: 1;';
+        viewModeDiv.innerHTML = `
+          <div>
+            ${note.targetApp ? `<span class="app-tag">📌 ${escapeHtml(note.targetApp)}</span>` : '<span class="app-tag" style="background:rgba(16,185,129,0.15);color:#10b981;">🌐 All Apps</span>'}
+            <p class="sd-note-text">${escapeHtml(note.content)}</p>
+            ${note.comment ? `<div class="comment">💬 ${escapeHtml(note.comment)}</div>` : ''}
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:9px;color:#888;">
+            <span>${new Date(note.createdAt || Date.now()).toLocaleDateString()}</span>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="sd-edit-icon" title="Edit note" style="cursor:pointer;font-size:11px;opacity:0.75;transition:opacity 0.15s;">✏️</span>
+              <span class="sd-del-icon" title="Delete note" style="cursor:pointer;font-size:11px;opacity:0.75;transition:opacity 0.15s;">🗑️</span>
+            </div>
+          </div>
+        `;
+
+        // Edit Mode HTML
+        const editModeDiv = document.createElement('div');
+        editModeDiv.className = 'sd-edit-mode';
+        editModeDiv.style.cssText = 'display: none; flex-direction: column; gap: 6px; flex: 1;';
+
+        const contentInput = document.createElement('textarea');
+        contentInput.className = 'edit-content-input';
+        contentInput.rows = 2;
+        contentInput.placeholder = 'Edit content...';
+        contentInput.value = note.content;
+        contentInput.style.cssText = 'width: 100%; font-size: 11px; padding: 4px 6px; border: 1px solid ' + color.border + '; border-radius: 6px; background: rgba(255,255,255,0.85); color: #1a0a00; outline: none; resize: vertical; font-family: inherit; margin: 0;';
+
+        const commentInput = document.createElement('textarea');
+        commentInput.className = 'edit-comment-input';
+        commentInput.rows = 1;
+        commentInput.placeholder = 'Edit comment (optional)...';
+        commentInput.value = note.comment || '';
+        commentInput.style.cssText = 'width: 100%; font-size: 10px; padding: 4px 6px; border: 1px solid ' + color.border + '88; border-radius: 6px; background: rgba(255,255,255,0.7); color: #78350f; outline: none; resize: vertical; font-family: inherit; margin: 0;';
+
+        // Color selection for edit mode
+        let activeEditColor = noteColorIndex;
+        const colorPickerRow = document.createElement('div');
+        colorPickerRow.style.cssText = 'display: flex; gap: 4px; align-items: center; margin-top: 2px;';
+        EXT_COLORS.forEach((c, idx) => {
+          const dot = document.createElement('div');
+          dot.style.cssText = 'width: 14px; height: 14px; border-radius: 50%; background: ' + c.bg + '; border: 2px solid ' + (idx === activeEditColor ? c.border : 'transparent') + '; cursor: pointer;';
+          dot.onclick = (e) => {
+            e.stopPropagation();
+            activeEditColor = idx;
+            Array.from(colorPickerRow.children).forEach((child, dIdx) => {
+              child.style.borderColor = dIdx === activeEditColor ? EXT_COLORS[dIdx].border : 'transparent';
+            });
+          };
+          colorPickerRow.appendChild(dot);
+        });
+
+        const btnRow = document.createElement('div');
+        btnRow.style.cssText = 'display: flex; gap: 6px; justify-content: flex-end; margin-top: 4px;';
+        
+        const saveEditBtn = document.createElement('button');
+        saveEditBtn.textContent = 'Save';
+        saveEditBtn.style.cssText = 'background: ' + color.border + '; color: #fff; border: none; border-radius: 4px; padding: 3px 10px; font-size: 10px; font-weight: 700; cursor: pointer;';
+        
+        const cancelEditBtn = document.createElement('button');
+        cancelEditBtn.textContent = 'Cancel';
+        cancelEditBtn.style.cssText = 'background: transparent; border: 1px solid ' + color.border + '; border-radius: 4px; padding: 3px 8px; font-size: 10px; cursor: pointer; color: #78350f;';
+
+        btnRow.appendChild(cancelEditBtn);
+        btnRow.appendChild(saveEditBtn);
+
+        editModeDiv.appendChild(contentInput);
+        editModeDiv.appendChild(commentInput);
+        editModeDiv.appendChild(colorPickerRow);
+        editModeDiv.appendChild(btnRow);
+
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'sd-close';
+        closeBtn.textContent = '×';
+
+        card.appendChild(closeBtn);
+        card.appendChild(viewModeDiv);
+        card.appendChild(editModeDiv);
+
+        registerMouseEvents(card);
+
+        // Edit button click
+        viewModeDiv.querySelector('.sd-edit-icon').onclick = (e) => {
+          e.stopPropagation();
+          viewModeDiv.style.display = 'none';
+          editModeDiv.style.display = 'flex';
+          contentInput.focus();
+        };
+
+        // Cancel button click
+        cancelEditBtn.onclick = (e) => {
+          e.stopPropagation();
+          contentInput.value = note.content;
+          commentInput.value = note.comment || '';
+          editModeDiv.style.display = 'none';
+          viewModeDiv.style.display = 'flex';
+        };
+
+        // Save button click
+        saveEditBtn.onclick = async (e) => {
+          e.stopPropagation();
+          const newContent = contentInput.value.trim();
+          const newComment = commentInput.value.trim();
+          if (!newContent) return;
+
+          saveEditBtn.textContent = '...';
+          saveEditBtn.disabled = true;
+
+          const updated = await window.electronAPI.updateNote({
+            id: note.id,
+            content: newContent,
+            comment: newComment,
+            colorIndex: activeEditColor,
+          });
+
+          note.content = newContent;
+          note.comment = newComment;
+          note.colorIndex = activeEditColor;
+
+          filterAndRenderNotes();
+        };
+
+        // Delete button click with confirm overlay (web app style)
+        const deleteNote = async (e) => {
+          e.stopPropagation();
+
+          // Remove any existing confirm overlay
+          const existingConfirm = card.querySelector('.sd-del-confirm');
+          if (existingConfirm) { existingConfirm.remove(); return; }
+
+          // Create styled delete confirmation overlay matching web app
+          const delConfirm = document.createElement('div');
+          delConfirm.className = 'sd-del-confirm';
+          delConfirm.style.cssText = `
+            position: absolute; inset: 0;
+            background: rgba(255,255,255,0.97);
+            border-radius: 12px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 12px; z-index: 100;
+            padding: 12px; box-sizing: border-box;
+            pointer-events: all;
+          `;
+          delConfirm.innerHTML = `
+            <p style="color:#0f172a;font-size:12px;font-weight:700;margin:0;text-align:center;">Delete this note?</p>
+            <div style="display:flex;gap:8px;">
+              <button class="del-cancel-btn" style="background:#f1f5f9;color:#475569;border:1px solid #cbd5e1;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;">Cancel</button>
+              <button class="del-confirm-btn" style="background:#ef4444;color:#fff;border:none;border-radius:6px;padding:5px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;">Delete</button>
+            </div>
+          `;
+          card.appendChild(delConfirm);
+          registerMouseEvents(delConfirm);
+
+          delConfirm.querySelector('.del-cancel-btn').onclick = (ev) => {
+            ev.stopPropagation();
+            delConfirm.remove();
+          };
+
+          delConfirm.querySelector('.del-confirm-btn').onclick = async (ev) => {
+            ev.stopPropagation();
+            await window.electronAPI.deleteNote(note.id);
+            card.remove();
+            allLoadedNotes = allLoadedNotes.filter(n => n.id !== note.id);
+          };
+        };
+
+        viewModeDiv.querySelector('.sd-del-icon').onclick = deleteNote;
+        closeBtn.onclick = deleteNote;
+
+        // Make Draggable
+        makeDraggable(card, note.id);
+
+        notesContainer.appendChild(card);
+      });
+    }
+
+    function makeDraggable(card, noteId) {
+      let isDragging = false;
+      let startX, startY, initialLeft, initialTop;
+
+      card.addEventListener('mousedown', (e) => {
+        if (
+          e.target.tagName === 'BUTTON' ||
+          e.target.tagName === 'TEXTAREA' ||
+          e.target.tagName === 'INPUT' ||
+          e.target.classList.contains('sd-del-icon') ||
+          e.target.classList.contains('sd-edit-icon') ||
+          e.target.closest('.sd-edit-mode')
+        ) return;
+
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+
+        const rect = card.getBoundingClientRect();
+        initialLeft = rect.left;
+        initialTop = rect.top;
+
+        card.style.left = initialLeft + 'px';
+        card.style.top = initialTop + 'px';
+        card.style.right = 'auto';
+        card.style.bottom = 'auto';
+      });
+
+      document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        card.style.left = initialLeft + dx + 'px';
+        card.style.top = initialTop + dy + 'px';
+      });
+
+      document.addEventListener('mouseup', () => {
+        if (!isDragging) return;
+        isDragging = false;
+        const finalLeft = parseInt(card.style.left);
+        const finalTop = parseInt(card.style.top);
+        window.electronAPI.updateNotePos({ id: noteId, x: finalLeft, y: finalTop });
+      });
+    }
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    fetchNotes();
+  </script>
+</body>
+</html>

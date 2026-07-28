@@ -2,9 +2,30 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/getUser";
 
+function corsResponse(data, status = 200) {
+  const res = NextResponse.json(data, { status });
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function GET(req) {
   const user = await getUser(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return corsResponse({ error: "Unauthorized" }, 401);
+
+  const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
+  const plan = dbUser?.plan || "free";
 
   const { searchParams } = new URL(req.url);
   const pageKey = searchParams.get("pageKey");
@@ -14,7 +35,7 @@ export async function GET(req) {
       where: { userId_pageKey: { userId: user.id, pageKey } },
       include: { notes: { orderBy: { createdAt: "desc" } } },
     });
-    return NextResponse.json({ notes: page?.notes || [], page });
+    return corsResponse({ notes: page?.notes || [], page, plan });
   }
 
   const notes = await prisma.note.findMany({
@@ -22,22 +43,17 @@ export async function GET(req) {
     include: { page: true },
     orderBy: { createdAt: "desc" },
   });
-  return NextResponse.json({ notes });
+  return corsResponse({ notes, plan });
 }
 
 export async function POST(req) {
   const user = await getUser(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return corsResponse({ error: "Unauthorized" }, 401);
 
   const body = await req.json();
   const { content, comment, colorIndex, pinned, posX, posY, pageKey, pageUrl, pageTitle } = body;
 
-  if (!content) return NextResponse.json({ error: "Content required" }, { status: 400 });
-
-  if (user.plan === "free") {
-    const count = await prisma.note.count({ where: { userId: user.id } });
-    if (count >= 50) return NextResponse.json({ error: "Free plan limit reached. Upgrade to Pro!" }, { status: 403 });
-  }
+  if (!content) return corsResponse({ error: "Content required" }, 400);
 
   let pageId = null;
   if (pageKey) {
@@ -65,5 +81,5 @@ export async function POST(req) {
     include: { page: true },
   });
 
-  return NextResponse.json({ note });
+  return corsResponse({ note });
 }

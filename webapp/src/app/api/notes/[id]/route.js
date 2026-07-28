@@ -2,18 +2,35 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getUser } from "@/lib/getUser";
 
+function corsResponse(data, status = 200) {
+  const res = NextResponse.json(data, { status });
+  res.headers.set("Access-Control-Allow-Origin", "*");
+  res.headers.set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  return res;
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    },
+  });
+}
+
 export async function PUT(req, { params }) {
   const user = await getUser(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return corsResponse({ error: "Unauthorized" }, 401);
 
   const note = await prisma.note.findFirst({
     where: { id: params.id, userId: user.id },
   });
-  if (!note) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!note) return corsResponse({ error: "Not found" }, 404);
 
   const body = await req.json();
 
-  // Pin to page — pageKey வந்தா page upsert பண்ணு
   let pageId = note.pageId;
   if (body.pageKey) {
     const page = await prisma.page.upsert({
@@ -38,18 +55,18 @@ export async function PUT(req, { params }) {
     include: { page: true },
   });
 
-  return NextResponse.json({ note: updated });
+  return corsResponse({ note: updated });
 }
 
 export async function DELETE(req, { params }) {
   const user = await getUser(req);
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  if (!user) return corsResponse({ error: "Unauthorized" }, 401);
 
   const note = await prisma.note.findFirst({
     where: { id: params.id, userId: user.id },
   });
-  if (!note) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  if (!note) return corsResponse({ error: "Not found" }, 404);
 
   await prisma.note.delete({ where: { id: params.id } });
-  return NextResponse.json({ success: true });
+  return corsResponse({ success: true });
 }
