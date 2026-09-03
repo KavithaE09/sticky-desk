@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+
 const COLORS = [
   { bg: "#FFF9C4", border: "#F59E0B" }, // 1. Warm Sunflower Yellow
   { bg: "#FFE8D6", border: "#EA580C" }, // 2. Sunset Amber Orange
@@ -69,7 +70,7 @@ function PinModal({ note, onPin, onClose }) {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(120,53,15,0.2)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999, backdropFilter: "blur(8px)" }}>
-      <div style={{ background: "#ffffff", border: "1px solid rgba(234,88,12,0.25)", borderRadius: 16, padding: 28, width: 420, boxShadow: "0 24px 60px rgba(234,88,12,0.15)" }}>
+      <div className="modal-box" style={{ background: "#ffffff", border: "1px solid rgba(234,88,12,0.25)", borderRadius: 16, padding: 28, boxShadow: "0 24px 60px rgba(234,88,12,0.15)" }}>
         <h3 style={{ color: "#1a0a00", marginBottom: 6, fontSize: 18, fontWeight: 800 }}>📌 Pin to Page</h3>
         <p style={{ color: "#78350f", fontSize: 12, marginBottom: 16 }}>Which webpage should this note pin to?</p>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
@@ -172,7 +173,7 @@ function NoteCard({ note, onDelete, onUpdate, onPin }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${color.border}33`, paddingTop: 8 }}>
             <span style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>{new Date(note.createdAt).toLocaleDateString()}</span>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              {!note.pinned && <button onClick={() => onPin(note)} style={{ background: "none", border: `1px solid ${color.border}88`, borderRadius: 5, padding: "2px 8px", cursor: "pointer", fontSize: 11, color: color.border, fontWeight: 700 }}>📌 Pin</button>}
+              {(!note.pinned || !note.page) && <button onClick={() => onPin(note)} style={{ background: "none", border: `1px solid ${color.border}88`, borderRadius: 5, padding: "2px 8px", cursor: "pointer", fontSize: 11, color: color.border, fontWeight: 700 }}>📌 Pin</button>}
               <button onClick={() => setEditing(true)} style={{ background: "none", border: "none", fontSize: 13, cursor: "pointer", opacity: 0.6 }}>✏️</button>
             </div>
           </div>
@@ -200,7 +201,7 @@ function AddNoteModal({ onAdd, onClose }) {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(120,53,15,0.2)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, backdropFilter: "blur(8px)" }}>
-      <div style={{ background: "#ffffff", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 16, padding: 28, width: 420, boxShadow: "0 24px 60px rgba(234,88,12,0.12)" }}>
+      <div className="modal-box" style={{ background: "#ffffff", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 16, padding: 28, boxShadow: "0 24px 60px rgba(234,88,12,0.12)" }}>
         <h3 style={{ color: "#1a0a00", marginBottom: 16, fontSize: 18, fontWeight: 800 }}>📝 New Note</h3>
         <textarea value={content} onChange={e => setContent(e.target.value)} style={{ width: "100%", minHeight: 100, background: "#fff8f3", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 8, padding: 12, color: "#1a0a00", fontSize: 14, resize: "vertical", boxSizing: "border-box" }} placeholder="Your note..." autoFocus />
         <textarea value={comment} onChange={e => setComment(e.target.value)} style={{ width: "100%", minHeight: 50, background: "#fff4ee", border: "1px solid rgba(234,88,12,0.12)", borderRadius: 8, padding: 12, color: "#78350f", fontSize: 13, resize: "vertical", marginTop: 10, boxSizing: "border-box" }} placeholder="Comment (optional)..." />
@@ -256,16 +257,16 @@ export default function Dashboard() {
 
   return (
     <div style={{ minHeight: "100vh", background: "#fff8f3" }}>
-      <header style={{ background: "#ffffff", borderBottom: "1px solid rgba(234,88,12,0.15)", padding: "0 32px", height: 72, display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 2px 10px rgba(234,88,12,0.06)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <img src="/logo.png" alt="StickyDesk" style={{ height: 50, width: "auto", objectFit: "contain", borderRadius: 10, filter: "drop-shadow(0 3px 8px rgba(234,88,12,0.2))" }} />
-          <span style={{ fontFamily: "'Righteous', 'Space Grotesk', cursive", fontSize: 23, color: "#1a0a00", letterSpacing: "0.5px" }}>
+      <header className="dash-header">
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <img src="/logo.png" alt="StickyDesk" style={{ height: 46, width: "auto", objectFit: "contain", borderRadius: 10, filter: "drop-shadow(0 3px 8px rgba(234,88,12,0.2))" }} />
+          <span style={{ fontFamily: "'Righteous', 'Space Grotesk', cursive", fontSize: 22, color: "#1a0a00", letterSpacing: "0.5px" }}>
             Sticky<span style={{ color: "#ea580c" }}>Desk</span>
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <span style={{ fontSize: 13, color: "#78350f", fontWeight: 500 }}>{session?.user?.email}</span>
-          <button onClick={() => signOut({ callbackUrl: "/" })} style={{ background: "#fff4ee", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 7, padding: "6px 14px", color: "#92400e", fontSize: 13, fontWeight: 600, cursor: "pointer" }}>Logout</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span className="dash-user-email">{session?.user?.email}</span>
+          <button onClick={() => signOut({ callbackUrl: "/" })} style={{ background: "#fff4ee", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 7, padding: "6px 14px", color: "#92400e", fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" }}>Logout</button>
         </div>
       </header>
 
@@ -298,19 +299,19 @@ export default function Dashboard() {
             <div style={{ fontSize: 16, fontWeight: 600 }}>{search ? "No notes found" : "No notes yet — create your first!"}</div>
           </div>
         ) : (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 14 }}>
+          <div className="notes-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 14 }}>
             {filtered.map(note => (
               <NoteCard key={note.id} note={note} onDelete={deleteNote} onUpdate={updateNote} onPin={(n) => setPinTarget(n)} />
             ))}
           </div>
         )}
 
-        <div style={{ marginTop: 48, background: "#fff4ee", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 14, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, boxShadow: "0 4px 16px rgba(234,88,12,0.08)" }}>
+        <div className="ext-banner" style={{ marginTop: 48, background: "#fff4ee", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 14, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, boxShadow: "0 4px 16px rgba(234,88,12,0.08)" }}>
           <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: "#c2410c", marginBottom: 4 }}>🔌 Install Chrome Extension</div>
             <div style={{ fontSize: 13, color: "#78350f", fontWeight: 500 }}>Auto-detect pages and pin notes as you browse</div>
           </div>
-          <a href="#extension" style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 100%)", color: "#fff", padding: "9px 20px", borderRadius: 8, fontSize: 13, fontWeight: 800, textDecoration: "none", boxShadow: "0 4px 14px rgba(234,88,12,0.3)" }}>
+          <a href="#extension" style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 100%)", color: "#fff", padding: "9px 20px", borderRadius: 8, fontSize: 13, fontWeight: 800, textDecoration: "none", boxShadow: "0 4px 14px rgba(234,88,12,0.3)", whiteSpace: "nowrap" }}>
             Install Extension →
           </a>
         </div>

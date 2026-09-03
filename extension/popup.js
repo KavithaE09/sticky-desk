@@ -97,7 +97,8 @@ async function init() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   currentTab = tab;
   const pKey = pageKeyFromURL(tab.url);
-  document.getElementById("pageInfo").textContent = `📌 Pinned to: ${pKey}`;
+  const pinIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px;margin-right:4px;"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-.11.79l-1.78.9A2 2 0 0 0 6 15.24V17z"/></svg>`;
+  document.getElementById("pageInfo").innerHTML = `${pinIconSvg}Pinned to: ${pKey}`;
 
   const { sd_token } = await chrome.storage.local.get("sd_token");
   if (!sd_token) {
@@ -109,24 +110,26 @@ async function init() {
 
 function showLoginScreen() {
   document.getElementById("content").innerHTML = `
-    <div class="login-msg">
-      <p style="color:#8892b0;font-size:13px;margin-bottom:12px">
+    <div class="login-msg" style="padding: 20px 16px;">
+      <p style="color:#78350f;font-size:13px;font-weight:700;margin-bottom:14px;text-align:center;">
         Login to StickyDesk first
       </p>
       <a href="${API_BASE}/auth" target="_blank"
-         style="display:block;background:#f9a825;color:#fff;padding:9px 16px;border-radius:7px;font-size:13px;font-weight:600;text-align:center;margin-bottom:10px">
-        🔑 Open Login Page →
+         style="display:block;background:linear-gradient(135deg, #ea580c 0%, #f97316 100%);color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;text-align:center;text-decoration:none;margin-bottom:14px;box-shadow:0 3px 10px rgba(234,88,12,0.25)">
+        Open Login Page →
       </a>
-      <div style="text-align:center;margin:10px 0;color:#555;font-size:11px">— after login —</div>
-      <input id="emailInput" type="email" placeholder="Your email"
-        style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:#fff;font-size:12px;margin-bottom:8px;box-sizing:border-box" />
-      <input id="passInput" type="password" placeholder="Your password"
-        style="width:100%;padding:8px 10px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:#fff;font-size:12px;margin-bottom:8px;box-sizing:border-box" />
+      <div style="text-align:center;margin:12px 0;color:#92400e;font-size:11px;font-weight:600">— or login below —</div>
+      <div style="text-align:left;margin-bottom:4px;font-size:11px;font-weight:700;color:#78350f">Email address</div>
+      <input id="emailInput" type="email" placeholder="name@example.com"
+        style="width:100%;padding:9px 12px;background:#ffffff;border:1px solid rgba(234,88,12,0.3);border-radius:8px;color:#1a0a00;font-size:13px;font-weight:600;margin-bottom:10px;box-sizing:border-box;outline:none;" />
+      <div style="text-align:left;margin-bottom:4px;font-size:11px;font-weight:700;color:#78350f">Password</div>
+      <input id="passInput" type="password" placeholder="••••••••"
+        style="width:100%;padding:9px 12px;background:#ffffff;border:1px solid rgba(234,88,12,0.3);border-radius:8px;color:#1a0a00;font-size:13px;font-weight:600;margin-bottom:14px;box-sizing:border-box;outline:none;" />
       <button id="loginBtn"
-        style="width:100%;background:rgba(249,168,37,0.15);border:1px solid #f9a825;color:#f9a825;padding:8px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600">
-        ✓ Connect Account
+        style="width:100%;background:linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%);border:none;color:#fff;padding:10px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;box-shadow:0 4px 14px rgba(234,88,12,0.35)">
+        Connect Account
       </button>
-      <div id="loginStatus" style="font-size:11px;color:#f9a825;text-align:center;margin-top:6px"></div>
+      <div id="loginStatus" style="font-size:11px;color:#ea580c;text-align:center;margin-top:8px;font-weight:700"></div>
     </div>`;
 
   document.getElementById("loginBtn").addEventListener("click", doLogin);
@@ -149,13 +152,13 @@ async function doLogin() {
     const data = await res.json();
     if (res.ok && data.token) {
       await chrome.storage.local.set({ token: data.token, sd_token: data.token, sd_email: data.email });
-      status.textContent = "✅ Connected!";
+      status.textContent = "Connected!";
       setTimeout(() => loadNotes(currentTab, data.token), 500);
     } else {
-      status.textContent = `❌ ${data.error || "Wrong email or password"}`;
+      status.textContent = `${data.error || "Wrong email or password"}`;
     }
   } catch (e) {
-    status.textContent = "❌ Cannot connect to StickyDesk";
+    status.textContent = "Cannot connect to StickyDesk";
   }
 }
 
@@ -181,10 +184,18 @@ async function loadNotes(tab, token) {
 
   const { sd_email } = await chrome.storage.local.get("sd_email");
 
+  const userSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+  const pinSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px;margin-right:3px;"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-.11.79l-1.78.9A2 2 0 0 0 6 15.24V17z"/></svg>`;
+  const commentSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px;margin-right:4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+  const editSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
+  const delSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
+
   document.getElementById("content").innerHTML = `
-    <div style="padding:8px 10px;font-size:10px;color:#555;display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)">
-      <span>👤 ${sd_email || "logged in"}</span>
-      <span id="logoutBtn" style="cursor:pointer;color:#f9a825">logout</span>
+    <div style="padding:8px 14px;font-size:11px;color:#78350f;font-weight:700;display:flex;justify-content:space-between;align-items:center;background:#fff4ee;border-bottom:1px solid rgba(234,88,12,0.15)">
+      <span style="display:flex;align-items:center;gap:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px">
+        ${userSvg}${sd_email || "logged in"}
+      </span>
+      <span id="logoutBtn" style="cursor:pointer;color:#ea580c;font-weight:800;background:rgba(234,88,12,0.1);padding:3px 8px;border-radius:6px;font-size:10px;text-transform:uppercase">logout</span>
     </div>
     <div class="notes-list" id="notesList">
       ${pageNotes.length === 0
@@ -222,7 +233,7 @@ async function loadNotes(tab, token) {
                 border-top: 1px dashed ${color.border}44;
                 padding-top: 4px;
                 margin-bottom: 0;
-              ">💬 ${escapeAndLinkify(n.comment, color)}</p>` : ""}
+              ">${commentSvg}${escapeAndLinkify(n.comment, color)}</p>` : ""}
               
               ${ytId ? `
                 <div style="
@@ -248,10 +259,10 @@ async function loadNotes(tab, token) {
 
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed ${color.border}22; padding-top: 6px;">
                 <div style="display: flex; gap: 12px; align-items: center;">
-                  <span class="edit-btn" data-id="${n.id}" style="cursor: pointer; font-size: 11px; opacity: 0.6; color: inherit;">✏️</span>
-                  <span class="delete-btn" data-id="${n.id}" style="cursor: pointer; font-size: 11px; opacity: 0.6; color: inherit;">🗑️</span>
+                  <span class="edit-btn" data-id="${n.id}" style="cursor: pointer; opacity: 0.7; color: inherit; display:flex; align-items:center;">${editSvg}</span>
+                  <span class="delete-btn" data-id="${n.id}" style="cursor: pointer; opacity: 0.7; color: inherit; display:flex; align-items:center;">${delSvg}</span>
                 </div>
-                ${n.pinned ? `<span style="font-size: 10px; color: #666;">📌 pinned</span>` : ""}
+                ${n.pinned ? `<span style="font-size: 10px; color: #666; display:flex; align-items:center; gap:2px;">${pinSvg} pinned</span>` : ""}
               </div>
             </div>
             <div id="edit-${n.id}" style="display: none; margin-top: 4px;">
@@ -271,7 +282,7 @@ async function loadNotes(tab, token) {
       <textarea id="noteContent" rows="3" placeholder="New note..."></textarea>
       <textarea id="noteComment" rows="2" placeholder="Comment (optional)..." style="margin-top:6px"></textarea>
       <div style="font-size:11px; color:#92400e; font-weight:700; background:#fff4ee; border:1px solid rgba(234,88,12,0.2); padding:6px 10px; border-radius:6px; margin: 8px 0 4px; display:flex; align-items:center; gap:6px;">
-        <span style="font-size:12px">📌</span> Auto-pinned to current webpage
+        ${pinSvg} Auto-pinned to current webpage
       </div>
       <button id="saveBtn" class="btn">Save Note</button>
     </div>`;

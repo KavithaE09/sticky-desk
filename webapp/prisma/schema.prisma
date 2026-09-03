@@ -48,3 +48,15 @@ model Note {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   page        Page?    @relation(fields: [pageId], references: [id], onDelete: SetNull)
 }
+
+model SupportTicket {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  category    String   // bug | feature | sync | extension | account | other
+  subject     String?
+  description String
+  severity    String   @default("medium") // low | medium | high
+  status      String   @default("open")   // open | in-progress | resolved
+  createdAt   DateTime @default(now())
+}

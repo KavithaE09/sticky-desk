@@ -134,3 +134,232 @@ input, textarea { font-family: inherit; }
   margin-bottom: 20px;
   transition: all 0.3s ease;
 }
+
+/* ===== NAVBAR ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 64px;
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 200;
+}
+
+.hamburger span {
+  display: block;
+  width: 26px;
+  height: 2.5px;
+  background: #7c4a0a;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open span:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+}
+.hamburger.open span:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+.hamburger.open span:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  gap: 0;
+  background: #fff8f3;
+  border-bottom: 1px solid rgba(234,88,12,0.15);
+  padding: 0 24px;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height 0.35s cubic-bezier(0.16,1,0.3,1), padding 0.3s ease;
+  position: relative;
+  z-index: 9;
+}
+
+.mobile-menu.open {
+  display: flex;
+  max-height: 400px;
+  padding: 16px 24px 24px;
+}
+
+/* ===== BROWSER MOCKUP ===== */
+.mockup-floating-notes {
+  display: flex;
+}
+
+.mockup-note-1,
+.mockup-note-2 {
+  position: absolute;
+}
+
+/* ===== DASHBOARD HEADER ===== */
+.dash-header {
+  background: #ffffff;
+  border-bottom: 1px solid rgba(234,88,12,0.15);
+  padding: 0 32px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 10px rgba(234,88,12,0.06);
+}
+
+.dash-user-email {
+  font-size: 13px;
+  color: #78350f;
+  font-weight: 500;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ===== PIN / ADD MODAL ===== */
+.modal-box {
+  width: 420px;
+  max-width: calc(100vw - 48px);
+}
+
+/* ===== RESPONSIVE BREAKPOINTS ===== */
+
+/* Tablet (≤ 900px) */
+@media (max-width: 900px) {
+  .navbar {
+    padding: 16px 24px;
+  }
+
+  .navbar-links {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  .dash-header {
+    padding: 0 16px;
+    height: 64px;
+  }
+
+  .dash-user-email {
+    max-width: 130px;
+    font-size: 12px;
+  }
+
+  .mockup-note-1,
+  .mockup-note-2 {
+    display: none !important;
+  }
+
+  .mockup-inner-content {
+    padding: 24px !important;
+    min-height: auto !important;
+  }
+}
+
+/* Mobile (≤ 600px) */
+@media (max-width: 600px) {
+  .navbar {
+    padding: 14px 16px;
+  }
+
+  .step-card {
+    padding: 22px 18px;
+  }
+
+  .feature-card {
+    padding: 20px 18px;
+  }
+
+  .dash-header {
+    padding: 0 12px;
+    height: 58px;
+  }
+
+  .dash-user-email {
+    max-width: 100px;
+    font-size: 11px;
+  }
+
+  /* Notes grid: 2 columns on small phones */
+  .notes-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Extension banner stacks */
+  .ext-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  /* Modal full-width on mobile */
+  .modal-box {
+    width: calc(100vw - 32px);
+    padding: 20px 16px !important;
+  }
+
+  /* Hero section */
+  .hero-section {
+    padding: 48px 16px 40px !important;
+  }
+
+  /* How it works / features header text */
+  .section-title {
+    font-size: 26px !important;
+  }
+}
+
+/* Very small phones (≤ 380px) */
+@media (max-width: 380px) {
+  .notes-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .dash-user-email {
+    display: none;
+  }
+}
+
+/* ===== SPIN ANIMATION (contact form loader) ===== */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== CONTACT SECTION RESPONSIVE ===== */
+@media (max-width: 860px) {
+  #contact > div {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #contact > div > div:last-child > form > div {
+    padding: 24px 16px !important;
+  }
+}

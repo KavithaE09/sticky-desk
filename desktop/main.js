@@ -212,11 +212,11 @@ async function updateNoteInAPI(noteId, noteData, token) {
 async function fetchDesktopNotesFromAPI(token) {
   if (!token) return [];
   try {
-    const urlObj = new URL(`${API_BASE}/api/notes?pageKey=desktop`);
+    const urlObj = new URL(`${API_BASE}/api/notes`);
     const options = {
       hostname: urlObj.hostname,
       port: urlObj.port || (urlObj.protocol === 'https:' ? 443 : 80),
-      path: urlObj.pathname + urlObj.search,
+      path: urlObj.pathname,
       method: 'GET',
       headers: { 'Authorization': `Bearer ${token}` },
     };
@@ -348,14 +348,16 @@ ipcMain.handle('load-notes', async () => {
   if (token) {
     try {
       const apiNotes = await fetchDesktopNotesFromAPI(token);
-      if (apiNotes.length > 0) {
-        cfg.notes = apiNotes.map(n => ({
+      // Filter only desktop-created notes
+      const desktopNotes = apiNotes.filter(n => n.page && n.page.pageKey && n.page.pageKey.startsWith('desktop'));
+      if (desktopNotes.length > 0 || apiNotes.length >= 0) {
+        cfg.notes = desktopNotes.map(n => ({
           id: n.id,
           apiId: n.id,
           content: n.content,
           comment: n.comment || '',
           colorIndex: n.colorIndex || 0,
-          targetApp: n.targetApp || n.pageTitle || null,
+          targetApp: n.page ? n.page.title : (n.targetApp || null),
           x: n.posX || 100,
           y: n.posY || 100,
           createdAt: n.createdAt,

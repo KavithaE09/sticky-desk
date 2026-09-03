@@ -200,7 +200,7 @@ function createWidget(notes, token, pageKey, plan) {
   // ── Floating "+ Add New Note" button ──────────────────────────────────
   const addBtn = document.createElement("div");
   addBtn.className = "sd-add-btn";
-  addBtn.textContent = "+ Add New Note";
+  addBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:6px;"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add New Note`;
   addBtn.style.cssText = `
     position: fixed !important;
     bottom: 24px !important;
@@ -285,19 +285,20 @@ function createWidget(notes, token, pageKey, plan) {
     // Close button
     const closeBtn = document.createElement("button");
     closeBtn.className = "sd-close";
-    closeBtn.textContent = "×";
+    closeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
     closeBtn.style.cssText = `
-      position:absolute; top:4px; right:6px;
-      background:none; border:none; font-size:16px;
+      position:absolute; top:6px; right:6px;
+      background:none; border:none; padding:0;
       cursor:pointer; color:rgba(0,0,0,0.4);
-      line-height:1; opacity:0.5; pointer-events:all;
+      display:flex; align-items:center; justify-content:center;
+      opacity:0.6; pointer-events:all; transition:opacity 0.2s;
     `;
     closeBtn.onclick = (e) => { e.stopPropagation(); card.remove(); };
 
     if (note.pinned) {
       const pin = document.createElement("span");
-      pin.textContent = "📌";
-      pin.style.cssText = `position:absolute;top:4px;right:24px;font-size:10px;`;
+      pin.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a1 1 0 0 0 0-2H8a1 1 0 0 0 0 2h1v4.76a2 2 0 0 1-.11.79l-1.78.9A2 2 0 0 0 6 15.24V17z"/></svg>`;
+      pin.style.cssText = `position:absolute;top:6px;right:24px;display:flex;align-items:center;`;
       card.appendChild(pin);
     }
 
@@ -323,7 +324,8 @@ function createWidget(notes, token, pageKey, plan) {
     // Comment
     if (note.comment) {
       const comment = document.createElement("p");
-      comment.innerHTML = `💬 ${escapeAndLinkify(note.comment, color)}`;
+      const commentIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-1px;margin-right:4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+      comment.innerHTML = `${commentIcon}${escapeAndLinkify(note.comment, color)}`;
       comment.style.cssText = `
         font-size: 10px;
         color: #555;
@@ -384,16 +386,16 @@ function createWidget(notes, token, pageKey, plan) {
     actions.style.cssText = "display:flex;gap:8px;align-items:center;";
 
     const editBtn = document.createElement("span");
-    editBtn.textContent = "✏️";
+    editBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>`;
     editBtn.title = "Edit";
-    editBtn.style.cssText = `cursor:pointer;font-size:11px;opacity:0.6;transition:opacity 0.2s;color:${isPro ? "#fff" : "inherit"}`;
+    editBtn.style.cssText = `cursor:pointer;display:flex;align-items:center;opacity:0.6;transition:opacity 0.2s;color:${isPro ? "#fff" : "inherit"}`;
     editBtn.onmouseover = () => editBtn.style.opacity = "1";
     editBtn.onmouseout = () => editBtn.style.opacity = "0.6";
 
     const deleteBtn = document.createElement("span");
-    deleteBtn.textContent = "🗑️";
+    deleteBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`;
     deleteBtn.title = "Delete";
-    deleteBtn.style.cssText = `cursor:pointer;font-size:11px;opacity:0.6;transition:opacity 0.2s;color:${isPro ? "#fff" : "inherit"}`;
+    deleteBtn.style.cssText = `cursor:pointer;display:flex;align-items:center;opacity:0.6;transition:opacity 0.2s;color:${isPro ? "#fff" : "inherit"}`;
     deleteBtn.onmouseover = () => deleteBtn.style.opacity = "1";
     deleteBtn.onmouseout = () => deleteBtn.style.opacity = "0.6";
 
@@ -585,8 +587,10 @@ function showAddNoteModal(token, pageKey, wrapper) {
   titleWrapper.appendChild(title);
 
   const closeX = document.createElement("span");
-  closeX.textContent = "✕";
-  closeX.style.cssText = "color:rgba(120,53,15,0.5); cursor:pointer; font-size:14px; font-weight:bold;";
+  closeX.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+  closeX.style.cssText = "color:rgba(120,53,15,0.5); cursor:pointer; display:flex; align-items:center; transition:opacity 0.2s;";
+  closeX.onmouseover = () => closeX.style.opacity = "0.8";
+  closeX.onmouseout = () => closeX.style.opacity = "1";
   closeX.onclick = () => overlay.remove();
 
   header.appendChild(titleWrapper);
