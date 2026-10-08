@@ -132,8 +132,8 @@ function NoteCard({ note, onDelete, onUpdate, onPin }) {
         transition: "all 0.25s ease",
         overflow: "hidden"
       }}>
-      {note.pinned && <span style={{ position: "absolute", top: 8, right: 36, display: "flex", alignItems: "center" }}><Pin size={14} color="#000" /></span>}
-      <button onClick={() => setConfirmDelete(true)} style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", cursor: "pointer", opacity: 0.5, display: "flex", alignItems: "center", padding: 2 }}><Trash2 size={15} color="#000" /></button>
+      {!editing && note.pinned && <span style={{ position: "absolute", top: 8, right: 36, display: "flex", alignItems: "center" }}><Pin size={14} color="#000" /></span>}
+      {!editing && <button onClick={() => setConfirmDelete(true)} style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", cursor: "pointer", opacity: 0.5, display: "flex", alignItems: "center", padding: 2 }}><Trash2 size={15} color="#000" /></button>}
 
       {confirmDelete && (
         <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.97)", borderRadius: 14, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, zIndex: 10, padding: 12, boxSizing: "border-box" }}>
