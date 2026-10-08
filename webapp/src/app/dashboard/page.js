@@ -309,7 +309,7 @@ export default function Dashboard() {
 
         <div className="ext-banner" style={{ marginTop: 48, background: "#fff4ee", border: "1px solid rgba(234,88,12,0.2)", borderRadius: 14, padding: "20px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16, boxShadow: "0 4px 16px rgba(234,88,12,0.08)" }}>
           <div>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#c2410c", marginBottom: 4 }}>🔌 Install Chrome Extension</div>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#c2410c", marginBottom: 4 }}>Install Chrome Extension</div>
             <div style={{ fontSize: 13, color: "#78350f", fontWeight: 500 }}>Auto-detect pages and pin notes as you browse</div>
           </div>
           <a href="#extension" style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 100%)", color: "#fff", padding: "9px 20px", borderRadius: 8, fontSize: 13, fontWeight: 800, textDecoration: "none", boxShadow: "0 4px 14px rgba(234,88,12,0.3)", whiteSpace: "nowrap" }}>
