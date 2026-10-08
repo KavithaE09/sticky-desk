@@ -291,15 +291,6 @@ export default function Home() {
       <div style={{ position: "relative", maxWidth: 1380, margin: "0 auto" }}>
         {/* Hero */}
         <section className="hero-section" style={{ textAlign: "center", padding: "70px 24px 60px", maxWidth: 940, margin: "0 auto", position: "relative", zIndex: 10 }}>
-          <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: "rgba(234,88,12,0.08)", border: "1px solid rgba(234,88,12,0.22)",
-            padding: "7px 18px", borderRadius: 30, fontSize: 13, fontWeight: 700,
-            color: "#ea580c", marginBottom: 24, boxShadow: "0 2px 12px rgba(234,88,12,0.08)"
-          }}>
-            <span>Smart Web Annotator &amp; Sticky Notes</span>
-          </div>
-
           <h1 style={{
             fontFamily: "'Outfit', 'Sora', sans-serif",
             fontSize: "clamp(38px, 6.8vw, 76px)", fontWeight: 900, color: "#1a0a00",
@@ -489,14 +480,6 @@ export default function Home() {
 
           {/* Left — copy */}
           <div>
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              background: "rgba(234,88,12,0.08)", border: "1px solid rgba(234,88,12,0.2)",
-              padding: "6px 16px", borderRadius: 30, fontSize: 13, fontWeight: 700,
-              color: "#ea580c", marginBottom: 20
-            }}>
-              Contact &amp; Support
-            </div>
             <h2 className="section-title" style={{ fontSize: "clamp(26px,4vw,38px)", fontWeight: 900, color: "#1a0a00", lineHeight: 1.15, marginBottom: 16 }}>
               Got a question <br />or found a bug?
             </h2>
