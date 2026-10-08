@@ -1,19 +1,14 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import {
-  Pin, ArrowRight, ArrowLeft, CheckCircle2, AlertTriangle,
-  Bug, Lightbulb, HelpCircle, Zap, MessageSquare, Send,
-  Mail, User, ChevronDown, Star
-} from "lucide-react";
 
 const CATEGORIES = [
-  { id: "bug", label: "Bug / Error", icon: Bug, color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)" },
-  { id: "feature", label: "Feature Request", icon: Lightbulb, color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
-  { id: "sync", label: "Sync / Cloud Issue", icon: Zap, color: "#0284c7", bg: "rgba(2,132,199,0.1)", border: "rgba(2,132,199,0.25)" },
-  { id: "extension", label: "Extension Problem", icon: AlertTriangle, color: "#7c3aed", bg: "rgba(124,58,237,0.1)", border: "rgba(124,58,237,0.25)" },
-  { id: "account", label: "Account / Login", icon: User, color: "#db2777", bg: "rgba(219,39,119,0.1)", border: "rgba(219,39,119,0.25)" },
-  { id: "other", label: "Other / General", icon: HelpCircle, color: "#ea580c", bg: "rgba(234,88,12,0.1)", border: "rgba(234,88,12,0.25)" },
+  { id: "bug", label: "Bug / Error", color: "#ef4444", bg: "rgba(239,68,68,0.1)", border: "rgba(239,68,68,0.25)" },
+  { id: "feature", label: "Feature Request", color: "#f59e0b", bg: "rgba(245,158,11,0.1)", border: "rgba(245,158,11,0.25)" },
+  { id: "sync", label: "Sync / Cloud Issue", color: "#0284c7", bg: "rgba(2,132,199,0.1)", border: "rgba(2,132,199,0.25)" },
+  { id: "extension", label: "Extension Problem", color: "#7c3aed", bg: "rgba(124,58,237,0.1)", border: "rgba(124,58,237,0.25)" },
+  { id: "account", label: "Account / Login", color: "#db2777", bg: "rgba(219,39,119,0.1)", border: "rgba(219,39,119,0.25)" },
+  { id: "other", label: "Other / General", color: "#ea580c", bg: "rgba(234,88,12,0.1)", border: "rgba(234,88,12,0.25)" },
 ];
 
 const SEVERITIES = [
@@ -85,7 +80,7 @@ export default function SupportPage() {
           padding: "8px 16px", borderRadius: 10,
           transition: "all 0.2s ease"
         }}>
-          <ArrowLeft size={15} /> Back to Home
+          Back to Home
         </Link>
       </nav>
 
@@ -99,7 +94,6 @@ export default function SupportPage() {
             padding: "7px 18px", borderRadius: 30, fontSize: 13, fontWeight: 700,
             color: "#ea580c", marginBottom: 20
           }}>
-            <MessageSquare size={14} />
             <span>Support Center</span>
           </div>
           <h1 style={{
@@ -111,7 +105,7 @@ export default function SupportPage() {
           <p style={{ fontSize: 16, color: "#78350f", maxWidth: 500, margin: "0 auto", lineHeight: 1.6, fontWeight: 500 }}>
             உங்களுக்கு ஏதாவது problem இருந்தா சொல்லுங்க — நாங்க fix பண்றோம்.
             <br />
-            <span style={{ color: "#a16207", fontSize: 14 }}>Tell us what's going wrong and we'll fix it fast.</span>
+            <span style={{ color: "#a16207", fontSize: 14 }}>Tell us what&apos;s going wrong and we&apos;ll fix it fast.</span>
           </p>
         </div>
 
@@ -126,15 +120,16 @@ export default function SupportPage() {
               width: 80, height: 80, borderRadius: "50%",
               background: "linear-gradient(135deg, #22c55e, #16a34a)",
               display: "flex", alignItems: "center", justifyContent: "center",
-              margin: "0 auto 24px", boxShadow: "0 8px 30px rgba(34,197,94,0.35)"
+              margin: "0 auto 24px", boxShadow: "0 8px 30px rgba(34,197,94,0.35)",
+              fontSize: 36
             }}>
-              <CheckCircle2 size={40} color="#fff" />
+              ✓
             </div>
             <h2 style={{ fontFamily: "'Outfit', sans-serif", fontSize: 28, fontWeight: 800, color: "#1a0a00", marginBottom: 12 }}>
               Ticket Submitted! 🎉
             </h2>
             <p style={{ color: "#78350f", fontSize: 16, marginBottom: 8, lineHeight: 1.6 }}>
-              Thank you for reaching out. We've received your report and will look into it.
+              Thank you for reaching out. We&apos;ve received your report and will look into it.
             </p>
             <div style={{
               display: "inline-block", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)",
@@ -160,7 +155,7 @@ export default function SupportPage() {
                 fontSize: 14, display: "inline-flex", alignItems: "center", gap: 8,
                 boxShadow: "0 6px 20px rgba(234,88,12,0.35)"
               }}>
-                Go to Dashboard <ArrowRight size={16} />
+                Go to Dashboard
               </Link>
             </div>
           </div>
@@ -176,8 +171,8 @@ export default function SupportPage() {
 
               {/* ─ Personal Info ─ */}
               <div style={{ marginBottom: 32 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                  <User size={14} /> Your Info
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>
+                  Your Info
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                   <div>
@@ -214,12 +209,11 @@ export default function SupportPage() {
 
               {/* ─ Category ─ */}
               <div style={{ marginBottom: 32 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                  <Bug size={14} /> Issue Category <span style={{ color: "#ef4444" }}>*</span>
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>
+                  Issue Category <span style={{ color: "#ef4444" }}>*</span>
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
                   {CATEGORIES.map(cat => {
-                    const IC = cat.icon;
                     const selected = form.category === cat.id;
                     return (
                       <button
@@ -239,7 +233,6 @@ export default function SupportPage() {
                           boxShadow: selected ? `0 4px 16px ${cat.bg}` : "none"
                         }}
                       >
-                        <IC size={18} />
                         {cat.label}
                       </button>
                     );
@@ -251,8 +244,8 @@ export default function SupportPage() {
 
               {/* ─ Severity ─ */}
               <div style={{ marginBottom: 32 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                  <AlertTriangle size={14} /> Severity
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>
+                  Severity
                 </div>
                 <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                   {SEVERITIES.map(sev => {
@@ -272,11 +265,6 @@ export default function SupportPage() {
                           transform: selected ? "scale(1.04)" : "scale(1)"
                         }}
                       >
-                        <div style={{ display: "flex", gap: 3 }}>
-                          {Array.from({ length: sev.stars }).map((_, i) => (
-                            <Star key={i} size={14} fill={selected ? sev.color : "#d1d5db"} color={selected ? sev.color : "#d1d5db"} />
-                          ))}
-                        </div>
                         <div>
                           <div style={{ fontSize: 13, fontWeight: 700, color: selected ? sev.color : "#78350f" }}>{sev.label}</div>
                           <div style={{ fontSize: 11, color: "#a16207" }}>{sev.desc}</div>
@@ -291,8 +279,8 @@ export default function SupportPage() {
 
               {/* ─ Subject & Description ─ */}
               <div style={{ marginBottom: 32 }}>
-                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20, display: "flex", alignItems: "center", gap: 8 }}>
-                  <MessageSquare size={14} /> Details
+                <div style={{ fontSize: 13, fontWeight: 800, color: "#c2410c", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 20 }}>
+                  Details
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
                   <div>
@@ -332,7 +320,7 @@ export default function SupportPage() {
                       onBlur={e => Object.assign(e.target.style, { ...inputStyle, minHeight: "140px", resize: "vertical" })}
                     />
                     <div style={{ fontSize: 12, color: "#a16207", marginTop: 6 }}>
-                      {form.description.length} characters {form.description.length < 30 && form.description.length > 0 && "— add  more detail"}
+                      {form.description.length} characters {form.description.length < 30 && form.description.length > 0 && "— add more detail"}
                     </div>
                   </div>
                 </div>
@@ -344,9 +332,8 @@ export default function SupportPage() {
                   background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)",
                   borderRadius: 12, padding: "12px 16px", color: "#dc2626",
                   fontSize: 14, fontWeight: 600, marginBottom: 20,
-                  display: "flex", alignItems: "center", gap: 8
                 }}>
-                  <AlertTriangle size={16} /> {error}
+                  {error}
                 </div>
               )}
 
@@ -363,7 +350,6 @@ export default function SupportPage() {
                   fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center", gap: 10,
                   boxShadow: loading ? "none" : "0 8px 28px rgba(234,88,12,0.38)",
                   transition: "all 0.25s ease",
-                  transform: loading ? "none" : undefined
                 }}
               >
                 {loading ? (
@@ -376,10 +362,7 @@ export default function SupportPage() {
                     Submitting...
                   </>
                 ) : (
-                  <>
-                    <Send size={18} />
-                    Submit Support Ticket
-                  </>
+                  "Submit Support Ticket"
                 )}
               </button>
             </div>
