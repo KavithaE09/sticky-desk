@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Trash2, Pin, Pencil } from "lucide-react";
 
 
 const COLORS = [
@@ -131,8 +132,8 @@ function NoteCard({ note, onDelete, onUpdate, onPin }) {
         transition: "all 0.25s ease",
         overflow: "hidden"
       }}>
-      {note.pinned && <span style={{ position: "absolute", top: 8, right: 36, fontSize: 14 }}>📌</span>}
-      <button onClick={() => setConfirmDelete(true)} style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", fontSize: 16, cursor: "pointer", opacity: 0.5 }}>🗑️</button>
+      {note.pinned && <span style={{ position: "absolute", top: 8, right: 36, display: "flex", alignItems: "center" }}><Pin size={14} color="#000" /></span>}
+      <button onClick={() => setConfirmDelete(true)} style={{ position: "absolute", top: 8, right: 10, background: "none", border: "none", cursor: "pointer", opacity: 0.5, display: "flex", alignItems: "center", padding: 2 }}><Trash2 size={15} color="#000" /></button>
 
       {confirmDelete && (
         <div style={{ position: "absolute", inset: 0, background: "rgba(255,255,255,0.97)", borderRadius: 14, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, zIndex: 10, padding: 12, boxSizing: "border-box" }}>
@@ -173,8 +174,8 @@ function NoteCard({ note, onDelete, onUpdate, onPin }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderTop: `1px solid ${color.border}33`, paddingTop: 8 }}>
             <span style={{ fontSize: 11, color: "#666", fontWeight: 500 }}>{new Date(note.createdAt).toLocaleDateString()}</span>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              {(!note.pinned || !note.page) && <button onClick={() => onPin(note)} style={{ background: "none", border: `1px solid ${color.border}88`, borderRadius: 5, padding: "2px 8px", cursor: "pointer", fontSize: 11, color: color.border, fontWeight: 700 }}>📌 Pin</button>}
-              <button onClick={() => setEditing(true)} style={{ background: "none", border: "none", fontSize: 13, cursor: "pointer", opacity: 0.6 }}>✏️</button>
+              {(!note.pinned || !note.page) && <button onClick={() => onPin(note)} style={{ background: "none", border: `1px solid ${color.border}88`, borderRadius: 5, padding: "3px 8px", cursor: "pointer", fontSize: 11, color: "#000", fontWeight: 700, display: "flex", alignItems: "center", gap: 4 }}><Pin size={11} color="#000" /> Pin</button>}
+              <button onClick={() => setEditing(true)} style={{ background: "none", border: "none", cursor: "pointer", opacity: 0.6, display: "flex", alignItems: "center", padding: 2 }}><Pencil size={13} color="#000" /></button>
             </div>
           </div>
         </>
