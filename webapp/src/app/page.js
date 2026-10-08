@@ -8,12 +8,12 @@ import {
 } from "lucide-react";
 
 const CATEGORIES = [
-  { id: "bug",       label: "Bug / Error",        icon: Bug,          color: "#ef4444" },
-  { id: "feature",   label: "Feature Request",     icon: Lightbulb,    color: "#f59e0b" },
-  { id: "sync",      label: "Sync Issue",          icon: Zap,          color: "#0284c7" },
-  { id: "extension", label: "Extension Problem",   icon: AlertTriangle, color: "#7c3aed" },
-  { id: "account",   label: "Account / Login",     icon: User,         color: "#db2777" },
-  { id: "other",     label: "Other",               icon: HelpCircle,   color: "#ea580c" },
+  { id: "bug",       label: "Bug / Error",        color: "#ef4444" },
+  { id: "feature",   label: "Feature Request",     color: "#f59e0b" },
+  { id: "sync",      label: "Sync Issue",          color: "#0284c7" },
+  { id: "extension", label: "Extension Problem",   color: "#7c3aed" },
+  { id: "account",   label: "Account / Login",     color: "#db2777" },
+  { id: "other",     label: "Other",               color: "#ea580c" },
 ];
 
 function ContactForm() {
@@ -121,7 +121,6 @@ function ContactForm() {
           <label style={lbl}>Topic <span style={{ color: "#ef4444" }}>*</span></label>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 4 }}>
             {CATEGORIES.map(cat => {
-              const IC = cat.icon;
               const sel = form.category === cat.id;
               return (
                 <button key={cat.id} type="button" id={`contact-cat-${cat.id}`}
@@ -137,7 +136,7 @@ function ContactForm() {
                     transform: sel ? "scale(1.05)" : "scale(1)"
                   }}
                 >
-                  <IC size={15} /> {cat.label}
+                  {cat.label}
                 </button>
               );
             })}
@@ -172,7 +171,7 @@ function ContactForm() {
             fontSize: 13, fontWeight: 600, marginBottom: 20,
             display: "flex", alignItems: "center", gap: 8
           }}>
-            <AlertTriangle size={15} /> {error}
+            {error}
           </div>
         )}
 
@@ -197,7 +196,7 @@ function ContactForm() {
               Sending…
             </>
           ) : (
-            <><Send size={17} /> Send Message</>
+            "Send Message"
           )}
         </button>
       </div>
@@ -496,7 +495,7 @@ export default function Home() {
               padding: "6px 16px", borderRadius: 30, fontSize: 13, fontWeight: 700,
               color: "#ea580c", marginBottom: 20
             }}>
-              <MessageSquare size={13} /> Contact &amp; Support
+              Contact &amp; Support
             </div>
             <h2 className="section-title" style={{ fontSize: "clamp(26px,4vw,38px)", fontWeight: 900, color: "#1a0a00", lineHeight: 1.15, marginBottom: 16 }}>
               Got a question <br />or found a bug?
@@ -508,24 +507,16 @@ export default function Home() {
             {/* Info cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
               {[
-                { icon: Bug,          color: "#ef4444", bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.18)",  title: "Report Bugs",      desc: "Found something broken? We'll fix it fast." },
-                { icon: Lightbulb,    color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.18)", title: "Request Features", desc: "Have an idea? We love building what users need." },
-                { icon: Mail,         color: "#0284c7", bg: "rgba(2,132,199,0.08)",  border: "rgba(2,132,199,0.18)",  title: "General Inquiry",  desc: "Any question — big or small — just ask." },
+                { color: "#ef4444", bg: "rgba(239,68,68,0.08)",  border: "rgba(239,68,68,0.18)",  title: "Report Bugs",      desc: "Found something broken? We'll fix it fast." },
+                { color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.18)", title: "Request Features", desc: "Have an idea? We love building what users need." },
+                { color: "#0284c7", bg: "rgba(2,132,199,0.08)",  border: "rgba(2,132,199,0.18)",  title: "General Inquiry",  desc: "Any question — big or small — just ask." },
               ].map((c, i) => {
-                const IC = c.icon;
                 return (
                   <div key={i} style={{
                     display: "flex", alignItems: "flex-start", gap: 14, padding: "16px 18px",
                     background: "#fff", borderRadius: 14, border: `1px solid ${c.border}`,
                     boxShadow: "0 2px 10px rgba(234,88,12,0.05)"
                   }}>
-                    <div style={{
-                      width: 40, height: 40, borderRadius: 10, flexShrink: 0,
-                      background: c.bg, border: `1px solid ${c.border}`,
-                      display: "flex", alignItems: "center", justifyContent: "center"
-                    }}>
-                      <IC size={18} color={c.color} />
-                    </div>
                     <div>
                       <div style={{ fontSize: 14, fontWeight: 700, color: "#1a0a00", marginBottom: 3 }}>{c.title}</div>
                       <div style={{ fontSize: 13, color: "#78350f" }}>{c.desc}</div>
