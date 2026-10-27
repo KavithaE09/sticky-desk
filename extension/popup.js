@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://stickydesk.in";
 const COLORS = [
   { bg: "#FFF9C4", border: "#F59E0B",
     proGradient: "linear-gradient(145deg, #2C1800 0%, #3D2500 50%, #1E1000 100%)",

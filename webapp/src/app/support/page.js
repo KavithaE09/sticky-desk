@@ -103,9 +103,7 @@ export default function SupportPage() {
             How Can We <span className="gradient-text">Help You?</span>
           </h1>
           <p style={{ fontSize: 16, color: "#78350f", maxWidth: 500, margin: "0 auto", lineHeight: 1.6, fontWeight: 500 }}>
-            உங்களுக்கு ஏதாவது problem இருந்தா சொல்லுங்க — நாங்க fix பண்றோம்.
-            <br />
-            <span style={{ color: "#a16207", fontSize: 14 }}>Tell us what&apos;s going wrong and we&apos;ll fix it fast.</span>
+            Got a problem? Let us know and we'll fix it quick
           </p>
         </div>
 
@@ -129,7 +127,7 @@ export default function SupportPage() {
               Ticket Submitted! 🎉
             </h2>
             <p style={{ color: "#78350f", fontSize: 16, marginBottom: 8, lineHeight: 1.6 }}>
-              Thank you for reaching out. We&apos;ve received your report and will look into it.
+              Thank you for reaching out. We'll get back to you soon.
             </p>
             <div style={{
               display: "inline-block", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)",
@@ -147,7 +145,7 @@ export default function SupportPage() {
                   transition: "all 0.2s ease"
                 }}
               >
-                Submit Another
+                Submit another
               </button>
               <Link href="/dashboard" style={{
                 background: "linear-gradient(135deg, #ea580c, #f97316)",
@@ -299,9 +297,7 @@ export default function SupportPage() {
                   <div>
                     <label style={labelStyle}>
                       Describe the issue <span style={{ color: "#ef4444" }}>*</span>
-                      <span style={{ color: "#a16207", fontWeight: 400, marginLeft: 8 }}>
-                        — என்ன பிரச்சனை வருது? எப்படி reproduce பண்றீங்க?
-                      </span>
+  
                     </label>
                     <textarea
                       id="support-description"
@@ -369,7 +365,7 @@ export default function SupportPage() {
 
             {/* Footer note */}
             <p style={{ textAlign: "center", color: "#a16207", fontSize: 13, marginTop: 20 }}>
-              🔒 Your data is private. We only use it to resolve your issue.
+               Your data is private. We only use it to resolve your issue.
             </p>
           </form>
         )}

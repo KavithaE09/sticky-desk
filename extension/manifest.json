@@ -2,15 +2,28 @@
   "manifest_version": 3,
   "name": "StickyDesk",
   "version": "1.0.0",
-  "description": "Pin notes to any webpage. Auto-syncs with StickyDesk.",
+  "description": "Pin sticky notes to any webpage. Auto-syncs seamlessly with StickyDesk.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "permissions": ["tabs", "storage", "activeTab"],
-  "host_permissions": ["http://localhost:3000/*", "http://localhost:3001/*", "http://localhost:3002/*", "<all_urls>"],
+  "host_permissions": [
+    "https://stickydesk.in/*",
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "StickyDesk"
+    "default_title": "StickyDesk",
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
   },
   "content_scripts": [
     {

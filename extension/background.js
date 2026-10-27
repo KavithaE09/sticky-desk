@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://stickydesk.in";
 
 async function apiFetch(path, options = {}) {
   const urlObj = new URL(`${API_BASE}${path}`);

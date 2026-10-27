@@ -278,7 +278,7 @@ export default function Dashboard() {
             <p style={{ fontSize: 13, color: "#78350f", marginTop: 4, fontWeight: 500 }}>{notes.length} notes saved</p>
           </div>
           <button onClick={() => setShowAdd(true)} style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 60%, #fb923c 100%)", border: "none", borderRadius: 9, padding: "10px 22px", color: "#fff", fontSize: 14, fontWeight: 800, boxShadow: "0 4px 18px rgba(234,88,12,0.35)", cursor: "pointer" }}>
-            + New Note
+             New Note
           </button>
         </div>
 
@@ -313,7 +313,7 @@ export default function Dashboard() {
             <div style={{ fontSize: 13, color: "#78350f", fontWeight: 500 }}>Auto-detect pages and pin notes as you browse</div>
           </div>
           <a href="#extension" style={{ background: "linear-gradient(135deg, #ea580c 0%, #f97316 100%)", color: "#fff", padding: "9px 20px", borderRadius: 8, fontSize: 13, fontWeight: 800, textDecoration: "none", boxShadow: "0 4px 14px rgba(234,88,12,0.3)", whiteSpace: "nowrap" }}>
-            Install Extension →
+            Install Extension 
           </a>
         </div>
       </main>

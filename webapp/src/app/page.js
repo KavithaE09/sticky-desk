@@ -3,8 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   Pin, Download, RefreshCw, Globe, Palette, Cloud,
-  Search, ShieldCheck, Zap, ArrowRight, Lock, CheckCircle2,
-  Send, Mail, User, MessageSquare, AlertTriangle, Bug, Lightbulb, HelpCircle
+  Search, ShieldCheck, Zap, ArrowRight, Lock, CheckCircle2
 } from "lucide-react";
 
 const CATEGORIES = [
@@ -372,9 +371,9 @@ export default function Home() {
                   <span>How StickyDesk keeps your research organized:</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 12, color: "#78350f" }}>
-                  <div>📌 <b>URL Matching:</b> Attach notes to exact URLs or entire domains</div>
-                  <div>⚡ <b>Instant Recall:</b> Notes pop up automatically when you return</div>
-                  <div>☁️ <b>Cloud Sync:</b> Access notes across Chrome, Edge &amp; Brave</div>
+                  <div> <b>URL Matching:</b> Attach notes to exact URLs or entire domains</div>
+                  <div> <b>Instant Recall:</b> Notes pop up automatically when you return</div>
+                  <div> <b>Cloud Sync:</b> Access notes across Chrome, Edge &amp; Brave</div>
                 </div>
               </div>
               <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
@@ -392,14 +391,14 @@ export default function Home() {
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: "#b45309", display: "flex", alignItems: "center", gap: 4 }}>
-                  <Pin size={13} /> StickyDesk Note
+                StickyDesk Note
                 </span>
                 <span style={{ fontSize: 10, color: "#78350f" }}>Just now</span>
               </div>
               <p style={{ fontSize: 13, lineHeight: 1.5, fontWeight: 500, margin: "0 0 6px" }}>
                 Pinned directly to stickydesk.app! Auto-sync is active.
               </p>
-              <p style={{ fontSize: 11, color: "#451a03", fontStyle: "italic" }}>💬 Click extension icon to add comments</p>
+              <p style={{ fontSize: 11, color: "#451a03", fontStyle: "italic" }}> Click extension icon to add comments</p>
             </div>
 
             {/* Floating Note 2 */}
@@ -410,7 +409,7 @@ export default function Home() {
             }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
                 <span style={{ fontSize: 12, fontWeight: 700, color: "#9a3412", display: "flex", alignItems: "center", gap: 4 }}>
-                  <Pin size={13} /> Research Tag
+                  Research Tag
                 </span>
               </div>
               <p style={{ fontSize: 13, lineHeight: 1.5, fontWeight: 500, margin: 0 }}>
